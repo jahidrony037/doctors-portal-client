@@ -5,12 +5,12 @@ import Button from '../Shared/Button';
 const Banner = () => {
    
     return (
-        <div className="hero min-h-screen"
+        <div className="hero lg:min-h-screen"
             style={{background:`url(${bg})`,
                     backgroundSize:'cover'}}
             >
             <div className="hero-content flex-col lg:flex-row-reverse">
-                <img src={chair} className="lg:max-w-lg w-[320px] rounded-lg shadow-2xl" />
+                <img src={chair} className="lg:max-w-lg w-[320px] rounded-lg shadow-2xl" alt='chair img'/>
                 <div>
                     <h1 className="text-5xl font-bold">Your New Smile Starts Here</h1>
                     <p className="py-6">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the.</p>
