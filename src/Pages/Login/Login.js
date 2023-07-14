@@ -26,6 +26,9 @@ const Login = () => {
     signIn(data.email, data.password)
       .then((result) => {
         const user = result.user;
+        if(user) {
+          toast.success("Login Successful");
+        }
         //console.log(user);
 
         navigate(from, { replace: true });
