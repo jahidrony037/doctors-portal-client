@@ -4,9 +4,11 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 
 const Login = () => {
-    const {signIn} = useContext(AuthContext);
+    const {signIn,loginWithGoogle} = useContext(AuthContext);
+     
     const {handleSubmit, formState:{errors}, register} = useForm();
     const [loginError, setLoginError] = useState('');
+    const [googleLoginError, setGoogleLoginError] = useState('');
 
     const location = useLocation();
     const navigate = useNavigate();
@@ -15,7 +17,7 @@ const Login = () => {
     const handleLogin = (data) =>{
 
         setLoginError('');
-        console.log(data);
+        //console.log(data);
         signIn(data.email,data.password)
         .then(result => {
             const user = result.user;
@@ -27,6 +29,20 @@ const Login = () => {
         .catch(error => {
             const errorMessage = error.message;
             setLoginError(errorMessage);
+        })
+    }
+
+    const handleGoogleLogin = ()=>{
+        setGoogleLoginError('');
+        loginWithGoogle()
+        .then((result)=>{
+             if(result.user){
+            navigate(from,{replace: true});
+             }
+        })
+        .catch((err)=> {
+            console.log(err)
+            setGoogleLoginError(err.message);
         })
     }
 
@@ -61,8 +77,10 @@ const Login = () => {
                 </form>
                 <p className='mt-[10px] text-[12px] text-center'>New to Doctors Portal ? <Link className='text-secondary underline' to="/signup">Create new Account</Link></p>
                 <div className="divider">OR</div>
-                <button className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
-            
+                <button onClick={handleGoogleLogin} className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
+                    <div>
+                        {googleLoginError && <p className='text-red-500'>{googleLoginError}</p>}
+                    </div>
             </div>
         </div>
     );

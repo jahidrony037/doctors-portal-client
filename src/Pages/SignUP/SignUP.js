@@ -4,9 +4,11 @@ import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 const SignUP = () => {
-    const {createUser,updateUser} = useContext(AuthContext);
+    const {createUser,updateUser,loginWithGoogle} = useContext(AuthContext);
     const {handleSubmit, formState:{errors}, register} = useForm();
     const [signUpError, setSignUpError] = useState('');
+    const [googleLoginError, setGoogleLoginError] = useState('');
+
     const handleSignUP = (data)=>{
         //console.log(data);
         setSignUpError('');
@@ -25,7 +27,21 @@ const SignUP = () => {
         .catch(error=> {
             setSignUpError(error.message);
         })
-    }   
+    }  
+    
+    const handleGoogleLogin = ()=>{
+        setGoogleLoginError('');
+        loginWithGoogle()
+        .then((result)=>{
+            if(result.user){
+                toast.success("Congrats Login Successful!");
+            }
+        })
+        .catch((err)=> {
+            console.log(err)
+            setGoogleLoginError(err.message);
+        })
+    }
     return (
         <div className='h-[800px] flex justify-center items-center'>
             <div className='w-96 p-7'>
@@ -66,7 +82,10 @@ const SignUP = () => {
                 </form>
                 <p className='mt-[10px] text-[12px] text-center'>Already Registered ? <Link className='text-secondary underline' to="/login">Please Login Here</Link></p>
                 <div className="divider">OR</div>
-                <button className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
+                <button onClick={handleGoogleLogin} className='btn btn-outline w-full'>CONTINUE WITH GOOGLE</button>
+                    <div>
+                        {googleLoginError && <p className='text-red-500'>{googleLoginError}</p>}
+                    </div>
             </div>
         </div>
     );
