@@ -1,8 +1,9 @@
 import { format } from "date-fns";
 import React, { useContext } from "react";
+import { toast } from "react-hot-toast";
 import { AuthContext } from "../../../contexts/AuthProvider";
 
-const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
+const BookingModal = ({ treatment, selectedDate, setTreatment,refetch }) => {
   const { user } = useContext(AuthContext);
   const { name, slots } = treatment;
   const date = format(selectedDate, "PP");
@@ -15,7 +16,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
     const email = form.email.value;
     const phone = form.phone.value;
     const booking = {
-      appointmentData: date,
+      appointmentDate: date,
       treatment: name,
       patient: patientName,
       slot,
@@ -24,7 +25,27 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
     };
 
     console.log(booking);
-    setTreatment(null);
+
+    fetch(`http://localhost:5000/bookings`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(booking),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        if (data?.acknowledged) {
+          setTreatment(null);
+          toast.success("Booking Confirmed");
+          refetch();
+        }
+        else{
+          toast.error(data.message);
+        }
+        
+      });
   };
   return (
     <>
@@ -63,6 +84,7 @@ const BookingModal = ({ treatment, selectedDate, setTreatment }) => {
             <input
               name="name"
               type="text"
+              disabled
               defaultValue={user?.displayName}
               placeholder="Your Name"
               className="input w-full input-bordered focus:outline-none"
