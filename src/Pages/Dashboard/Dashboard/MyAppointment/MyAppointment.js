@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import React, { useContext } from "react";
+import Loading from "../../../../Shared/Loading/Loading";
 import { AuthContext } from "../../../../contexts/AuthProvider";
 
 const MyAppointment = () => {
@@ -7,7 +8,7 @@ const MyAppointment = () => {
 
   const url = `http://localhost:5000/bookings?email=${user?.email}`;
 
-  const { data: bookings = [] } = useQuery({
+  const { data: bookings = [], isLoading} = useQuery({
     queryKey: ["bookings", user?.email],
     queryFn: async () => {
       const res = await fetch(url,{
@@ -20,12 +21,16 @@ const MyAppointment = () => {
     },
   });
 
+  if(isLoading){
+    return <Loading/>
+  }
+
   return (
-    <div>
-      <h3 className="text-3xl mb-3">My Appointments</h3>
+    <div className="text-center">
+      <h3 className="text-3xl mb-4 text-primary">My Appointments</h3>
       <div className="overflow-x-auto">
         <table className="table">
-          {/* head */}
+          
           <thead className="bg-slate-300 text-black uppercase">
             <tr>
               <th></th>
@@ -36,7 +41,7 @@ const MyAppointment = () => {
             </tr>
           </thead>
           <tbody>
-            {/* row 1 */}
+            
             {bookings.map((booking, i) => (
               <tr key={booking._id} className="hover">
                 <th>{i+1}</th>
