@@ -1,15 +1,17 @@
 import React, { useContext } from 'react';
 import { toast } from 'react-hot-toast';
-import { useRouteError } from 'react-router-dom';
+import { useNavigate, useRouteError } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthProvider';
 
 const DisplayError = () => {
     const {logOut} = useContext(AuthContext);
     const error = useRouteError();
+    const navigate = useNavigate();
 
     const handleLogOut = () => {
         logOut()
           .then(() => {
+           
             toast("Logout Successful!", {
               icon: "👍",
               style: {
@@ -18,6 +20,7 @@ const DisplayError = () => {
                 color: "#fff",
               },
             });
+            navigate('/login');
           })
           .catch((error) => {
             console.log(error.message);
